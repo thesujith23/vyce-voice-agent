@@ -1,7 +1,7 @@
-import { useEffect, useState, type CSSProperties, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import {
-  ArrowRight, ArrowUpRight, CalendarDays, Check, ChevronDown, Clock3, Globe2,
-  Headphones, Menu, MessageCircle, Mic2, Play, ShieldCheck, Sparkles,
+  ArrowRight, ArrowUpRight, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Globe2,
+  Headphones, Menu, MessageCircle, Mic2, Play, ShieldCheck, Sparkles, Volume2,
   X, Zap,
 } from "lucide-react";
 
@@ -52,6 +52,14 @@ const faqs = [
   ["Can Vyce connect to our tools?", "Vyce is designed to fit into the systems you already use. Talk to the team about the workflows, tools, and data sources you want to connect."],
 ];
 
+const voiceAgents = [
+  { id: "maya", name: "Maya", role: "The Warm Guide", accent: "US · Warm", locale: "en-US", pitch: 1.08, rate: .96, color: "#a88cff", quote: "I’m here to make the next step feel easy." },
+  { id: "leo", name: "Leo", role: "The Clear Operator", accent: "UK · Precise", locale: "en-GB", pitch: .88, rate: .92, color: "#b7f18d", quote: "Let’s get that sorted for you right away." },
+  { id: "sana", name: "Sana", role: "The Bright Connector", accent: "IN · Energetic", locale: "en-IN", pitch: 1.12, rate: 1.02, color: "#ff826d", quote: "Absolutely — I can help you move forward." },
+  { id: "noa", name: "Noa", role: "The Calm Expert", accent: "AU · Calm", locale: "en-AU", pitch: .98, rate: .88, color: "#d9ccff", quote: "Take your time. I’ve got the details right here." },
+] as const;
+type VoiceAgent = typeof voiceAgents[number];
+
 function LogoMark() {
   return <span className="logo-mark" aria-hidden="true"><span /><span /><span /></span>;
 }
@@ -78,6 +86,9 @@ export default function Home() {
   const [selectedSlot, setSelectedSlot] = useState("10:00 AM");
   const [demoRequested, setDemoRequested] = useState(false);
   const [heroPointer, setHeroPointer] = useState({ x: 0, y: 0 });
+  const [hoveredVoiceId, setHoveredVoiceId] = useState<string | null>(null);
+  const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
+  const voiceTrackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -151,6 +162,26 @@ export default function Home() {
     "--mouse-glow-y": `${heroPointer.y * 82}px`,
   } as CSSProperties;
   const heroEnergy = Math.min(1, Math.sqrt(heroPointer.x ** 2 + heroPointer.y ** 2) / 1.15);
+  const scrollVoices = (direction: number) => {
+    voiceTrackRef.current?.scrollBy({ left: direction * 310, behavior: "smooth" });
+  };
+  const playVoice = (agent: VoiceAgent) => {
+    if (!("speechSynthesis" in window)) return;
+    if (playingVoiceId === agent.id) {
+      window.speechSynthesis.cancel();
+      setPlayingVoiceId(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(agent.quote);
+    utterance.lang = agent.locale;
+    utterance.pitch = agent.pitch;
+    utterance.rate = agent.rate;
+    utterance.onend = () => setPlayingVoiceId(null);
+    utterance.onerror = () => setPlayingVoiceId(null);
+    setPlayingVoiceId(agent.id);
+    window.speechSynthesis.speak(utterance);
+  };
   const demoDays = [
     { weekday: "Tue", date: "22 Sep" },
     { weekday: "Wed", date: "23 Sep" },
@@ -203,6 +234,9 @@ export default function Home() {
       <section className="logo-strip section-container" aria-label="Trusted by teams" data-reveal="fade"><span className="logo-strip-label">POWERING THE NEXT<br />GENERATION OF TEAMS</span><div className="customer-logos"><span>northstar</span><span className="logo-serif">arc / studio</span><span className="logo-mono">WAVEFORM</span><span className="logo-serif">Sonder</span><span>rally<span className="logo-dot">.</span></span></div></section>
 
       <section className="intro-section section-container" id="product" data-reveal="up"><div className="section-kicker"><span>01</span><span className="kicker-line" /><span>THE NEW FRONT DESK</span></div><div className="intro-grid"><h2>Your best people<br />shouldn’t sound <em>busy.</em></h2><div className="intro-copy"><p>Every unanswered call is a missed moment. Vyce gives your business a voice that’s warm, capable, and ready whenever your customers are.</p><button className="arrow-link" onClick={() => scrollTo("use-cases")}>Explore the platform <ArrowRight size={17} /></button></div></div><div className="feature-line-grid"><div className="feature-line-card" data-reveal="up" data-reveal-delay="1"><div className="feature-number">01</div><div className="line-icon"><MessageCircle size={19} /></div><h3>Natural by default</h3><p>Understands the way people actually speak — interruptions, accents, and all.</p></div><div className="feature-line-card" data-reveal="up" data-reveal-delay="2"><div className="feature-number">02</div><div className="line-icon"><Zap size={19} /></div><h3>Fast enough to feel human</h3><p>Low-latency conversations that keep the rhythm natural and the queue moving.</p></div><div className="feature-line-card" data-reveal="up" data-reveal-delay="3"><div className="feature-number">03</div><div className="line-icon"><ArrowUpRight size={19} /></div><h3>Always connected</h3><p>Turns every conversation into the next best action across your workflow.</p></div></div></section>
+
+
+      <section className="voice-studio-section" id="voice-studio" data-reveal="up"><div className="section-container"><div className="voice-studio-top"><div><div className="section-kicker light-kicker"><span>02A</span><span className="kicker-line" /><span>VOICE STUDIO</span></div><h2>Same intelligence.<br /><em>Different voices.</em></h2></div><div className="voice-studio-intro"><p>Meet the agents behind the conversation. Hover to wake a voice up, then press play to hear its tone and cadence.</p><div className="voice-studio-controls"><button onClick={() => scrollVoices(-1)} aria-label="Previous voice"><ChevronLeft size={17} /></button><button onClick={() => scrollVoices(1)} aria-label="Next voice"><ChevronRight size={17} /></button></div></div></div><div className="voice-studio-track" ref={voiceTrackRef}>{voiceAgents.map((agent, index) => { const isActive = hoveredVoiceId === agent.id || playingVoiceId === agent.id; return <article key={agent.id} className={`voice-agent-card ${isActive ? "voice-agent-active" : ""}`} style={{ "--voice-color": agent.color, "--card-index": index } as CSSProperties} onMouseEnter={() => setHoveredVoiceId(agent.id)} onMouseLeave={() => setHoveredVoiceId(null)} onFocus={() => setHoveredVoiceId(agent.id)}><div className="voice-agent-top"><span className="voice-agent-index">0{index + 1} / 04</span><span className="voice-agent-accent"><span /> {agent.accent}</span></div><div className="voice-agent-avatar"><div className="voice-agent-orbit orbit-inner" /><div className="voice-agent-orbit orbit-outer" /><span>{agent.name.slice(0, 1)}</span></div><div className="voice-agent-wave"><span className="voice-agent-wave-label">{isActive ? "LISTENING PREVIEW" : "HOVER TO PREVIEW"}</span><Waveform reactive energy={isActive ? .9 : .2} /></div><div className="voice-agent-bottom"><div><h3>{agent.name}</h3><p>{agent.role}</p></div><button className={playingVoiceId === agent.id ? "voice-play-button is-playing" : "voice-play-button"} onClick={() => playVoice(agent)} aria-label={`${playingVoiceId === agent.id ? "Stop" : "Play"} ${agent.name} voice preview`}><span>{playingVoiceId === agent.id ? <span className="pause-glyph">Ⅱ</span> : <Play size={15} fill="currentColor" />}</span></button></div><div className="voice-agent-quote">“{agent.quote}”</div><div className="voice-agent-footer"><Volume2 size={13} /><span>{agent.locale} voice model</span><span className="voice-agent-live">{playingVoiceId === agent.id ? "PLAYING" : "READY"}</span></div></article>; })}</div><div className="voice-swipe-hint"><span>SWIPE TO EXPLORE VOICES</span><span className="voice-swipe-line"><i /></span><span>4 AGENTS / 4 CADENCES</span></div></div></section>
 
       <section className="use-case-section" id="use-cases" data-reveal="up"><div className="section-container"><div className="use-case-header"><div><div className="section-kicker light-kicker"><span>02</span><span className="kicker-line" /><span>ONE VOICE. MANY JOBS.</span></div><h2>Make every call<br /><em>count.</em></h2></div><p>From first hello to final handoff, Vyce helps your team do more with every conversation.</p></div><div className="case-tabs" role="tablist" aria-label="Vyce use cases">{(Object.keys(useCases) as UseCase[]).map((item) => <button key={item} role="tab" aria-selected={activeCase === item} className={activeCase === item ? "case-tab active" : "case-tab"} onClick={() => setActiveCase(item)}>{item}<ArrowUpRight size={16} /></button>)}</div><div className="case-panel"><div className="case-story"><div className="eyebrow coral-eyebrow"><span className="eyebrow-dot" /> {current.eyebrow}</div><h3>{current.title}</h3><p>{current.description}</p><div className="case-stat"><strong>{current.stat}</strong><span>{current.statLabel}</span></div></div><div className="transcript-card"><div className="transcript-top"><span className="transcript-label"><span className="live-dot" /> LIVE TRANSCRIPT</span><span>Today, 10:42 AM</span></div><div className="transcript-lines">{current.transcript.map(([speaker, text], index) => <div className={`transcript-line ${speaker === "Vyce" ? "vyce-line" : ""}`} key={`${speaker}-${index}`}><span className={speaker === "Vyce" ? "mini-avatar" : "speaker-mark"}>{speaker === "Vyce" ? "V" : "·"}</span><div><span className="speaker-name">{speaker}</span><p>{text}</p></div></div>)}</div><div className="transcript-bottom"><Waveform small /><span>Conversation clarity <b>98%</b></span><span className="transcript-check"><Check size={13} /> Resolved</span></div></div></div></div></section>
 
