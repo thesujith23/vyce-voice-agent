@@ -66,15 +66,138 @@ html { scroll-behavior: smooth; }
 @keyframes booking-modal-in { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes booking-details-in { from { opacity: 0; transform: translateX(18px) scale(.98); } to { opacity: 1; transform: translateX(0) scale(1); } }
 @keyframes booking-confirmed-in { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
-/* Scroll-driven grouped-to-expanded voice lineup */
-.voice-story { position: relative; min-height: 1180px; }.voice-story-stage { position: relative; height: 640px; margin-top: 58px; perspective: 1100px; overflow: hidden; border-radius: 18px; background: #15141a; box-shadow: 16px 17px 0 rgba(21,20,26,.12); }.voice-story-grid { position: absolute; inset: 0; opacity: .2; background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: 52px 52px; mask-image: radial-gradient(ellipse at center, black, transparent 85%); }.voice-story-orbit { position: absolute; top: 50%; left: 50%; width: 400px; height: 230px; border: 1px solid rgba(168,140,255,.25); border-radius: 50%; transform: translate(-50%,-50%) rotate(-14deg); box-shadow: 0 0 0 38px rgba(168,140,255,.025), 0 0 0 76px rgba(168,140,255,.018); transition: opacity .4s ease; }.voice-story-caption { position: absolute; z-index: 1; top: 22px; left: 25px; color: rgba(247,244,239,.42); font: 8px "DM Mono", monospace; letter-spacing: .08em; }.voice-story-card { position: absolute; z-index: var(--card-z); top: 50%; left: 50%; display: grid; grid-template-columns: 165px 1fr 235px; align-items: center; gap: 32px; width: min(850px, calc(100% - 60px)); min-height: 280px; padding: 25px 30px; color: #f7f4ef; border: 1px solid rgba(255,255,255,.13); border-radius: 14px; background: #1f1d27; box-shadow: 0 20px 45px rgba(0,0,0,.25); transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y))) rotate(var(--card-r)); transition: transform .12s linear, opacity .25s ease, filter .25s ease; will-change: transform; }.voice-story-card:not(.voice-card-0) { filter: saturate(.9); }.voice-card-top { position: absolute; top: 20px; left: 25px; right: 25px; display: flex; justify-content: space-between; color: var(--card-color); font: 9px "DM Mono", monospace; }.voice-card-avatar { display: grid; place-items: center; width: 110px; height: 110px; margin: auto; color: #15141a; border-radius: 50%; background: radial-gradient(circle at 32% 22%, #fff, var(--card-color) 34%, #282337 78%); box-shadow: inset -17px -19px 33px rgba(0,0,0,.38), 0 0 0 10px rgba(255,255,255,.04), 0 0 35px color-mix(in srgb, var(--card-color) 28%, transparent); font-size: 43px; }.voice-card-copy > span { display: flex; align-items: center; gap: 7px; color: var(--card-color); font: 8px "DM Mono", monospace; letter-spacing: .08em; }.voice-card-copy > span i { width: 5px; height: 5px; border-radius: 50%; background: var(--card-color); box-shadow: 0 0 8px var(--card-color); }.voice-card-copy h3 { margin-top: 16px; font-size: 44px; line-height: .85; letter-spacing: -.08em; }.voice-card-copy strong { display: block; margin-top: 8px; color: var(--card-color); font: 400 20px Georgia, serif; }.voice-card-copy p { margin: 16px 0 18px; color: rgba(247,244,239,.55); font: italic 14px/1.35 Georgia, serif; }.voice-card-play { padding: 10px 13px; color: #15141a; background: #f7f4ef; font-size: 10px; }.voice-card-signal { align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding-left: 25px; border-left: 1px solid rgba(255,255,255,.12); }.voice-card-wave { display: grid; place-items: center; height: 87px; color: var(--card-color); border-top: 1px solid rgba(255,255,255,.1); border-bottom: 1px solid rgba(255,255,255,.1); }.voice-card-wave .new-wave { transform: scale(1.28); }.voice-card-signal small { margin-top: 12px; color: rgba(247,244,239,.3); font: 7px "DM Mono", monospace; }.story-underbar { position: absolute; bottom: 22px; left: 25px; right: 25px; z-index: 4; }.story-underbar i { background: rgba(255,255,255,.14); }.story-underbar i b { background: var(--coral); transition: width .15s linear; }
-/* Booking details step */
-.booking-details h2 { margin-top: 18px; }.booking-details > p { max-width: 350px; margin-top: 14px; color: rgba(246,243,238,.52); font-size: 12px; line-height: 1.55; }.booking-selected { display: flex; align-items: center; gap: 8px; margin: 22px 0 18px; padding: 11px 12px; color: #f6f3ee; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; background: rgba(255,255,255,.05); font-size: 11px; }.booking-selected svg { color: var(--violet); }.booking-selected button { margin-left: auto; padding: 0; color: var(--coral); background: none; font-size: 10px; }.booking-details label { display: block; margin-top: 13px; color: rgba(246,243,238,.48); font: 9px "DM Mono", monospace; }.booking-details label > div { display: flex; align-items: center; gap: 9px; margin-top: 7px; padding: 12px; color: var(--violet); border: 1px solid rgba(255,255,255,.14); border-radius: 8px; background: rgba(255,255,255,.045); transition: border .2s ease, background .2s ease; }.booking-details label > div:focus-within { border-color: var(--violet); background: rgba(168,140,255,.09); }.booking-details input { width: 100%; color: #f6f3ee; border: 0; outline: 0; background: transparent; font: 12px "Manrope", sans-serif; }.booking-details input::placeholder { color: rgba(246,243,238,.3); }.booking-submit { margin-top: 22px; }
-@media (max-width: 900px) { .voice-story { min-height: 1020px; }.voice-story-stage { height: 610px; }.voice-story-card { grid-template-columns: 120px 1fr 190px; gap: 20px; width: calc(100% - 40px); padding: 22px; }.voice-card-avatar { width: 88px; height: 88px; font-size: 34px; }.voice-card-copy h3 { font-size: 38px; }.voice-card-copy strong { font-size: 17px; }.voice-card-signal { padding-left: 18px; } }
-@media (max-width: 680px) { .voice-story { min-height: 1260px; }.voice-story-stage { height: 900px; overflow: visible; }.voice-story-caption { top: 17px; }.voice-story-card { display: block; width: calc(100% - 30px); min-height: 0; padding: 54px 23px 24px; transform: translate(-50%, calc(-50% + var(--card-y))) rotate(var(--card-r)); }.voice-story-card .voice-card-top { top: 17px; }.voice-story-card .voice-card-avatar { width: 92px; height: 92px; margin: 0 0 24px; }.voice-card-copy h3 { font-size: 44px; }.voice-card-signal { margin-top: 25px; padding: 20px 0 0; border-top: 1px solid rgba(255,255,255,.12); border-left: 0; }.voice-story-card { --card-x: 0px !important; }.voice-card-0 { --card-y: -280px !important; }.voice-card-1 { --card-y: 0px !important; }.voice-card-2 { --card-y: 280px !important; }.story-underbar { bottom: 18px; } }
-@media (prefers-reduced-motion: reduce) { .voice-story-card { transition: none; } .new-modal-backdrop, .calendar-modal { animation: none; } }
+/* ─── Voice Spread: scroll-driven bundled → fanned cards ─── */
+.voice-spread { position: relative; }
+
+.vs-stage {
+  position: relative;
+  height: 580px;
+  margin-top: 48px;
+  border-radius: 20px;
+  background: transparent;
+  overflow: visible;
+}
+
+.vs-hint {
+  position: absolute;
+  z-index: 10;
+  top: -8px;
+  left: 0;
+  color: var(--muted);
+  font: 8px "DM Mono", monospace;
+  letter-spacing: .1em;
+  transition: opacity .3s ease;
+}
+
+/* ─── Card ─── */
+.vs-card {
+  position: absolute;
+  z-index: var(--zi);
+  top: 50%;
+  left: 50%;
+  width: 220px;
+  min-height: 340px;
+  padding: 36px 22px 24px;
+  border-radius: 18px;
+  background: var(--card-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  color: #f7f4ef;
+  text-align: center;
+  transform:
+    translate(calc(-50% + var(--cx)), calc(-50% + var(--cy)))
+    rotate(var(--cr))
+    scale(var(--cs));
+  transition: transform .08s linear, box-shadow .3s ease, border-color .3s ease;
+  will-change: transform;
+  box-shadow: 0 10px 36px rgba(0,0,0,.22), 0 0 0 1px rgba(255,255,255,.06);
+}
+.vs-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 12px 44px rgba(0,0,0,.4), 0 0 40px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* Card number & locale */
+.vs-card-num {
+  position: absolute;
+  top: 10px; left: 14px;
+  color: var(--accent);
+  font: 8px "DM Mono", monospace;
+  opacity: .6;
+}
+.vs-card-locale {
+  position: absolute;
+  top: 10px; right: 14px;
+  color: var(--accent);
+  font: 8px "DM Mono", monospace;
+  opacity: .6;
+}
+
+/* Avatar orb */
+.vs-card-orb {
+  display: grid;
+  place-items: center;
+  width: 56px; height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 20%, #fff, var(--accent) 40%, #1a1a2e 82%);
+  box-shadow: inset -8px -10px 18px rgba(0,0,0,.4), 0 0 20px color-mix(in srgb, var(--accent) 20%, transparent);
+  color: #111;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Text */
+.vs-card h3 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+.vs-card strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--accent);
+  font: 400 12px Georgia, serif;
+}
+.vs-card p {
+  margin: 10px 0 14px;
+  color: rgba(247,244,239,.4);
+  font: italic 10px/1.45 Georgia, serif;
+}
+
+/* Play button */
+.vs-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: rgba(255,255,255,.1);
+  color: var(--accent);
+  font: 600 9px "Manrope", sans-serif;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: background .25s ease, transform .2s ease;
+}
+.vs-play:hover {
+  background: rgba(255,255,255,.18);
+  transform: scale(1.05);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .vs-stage { height: 480px; }
+  .vs-card { width: 180px; padding: 24px 16px 16px; }
+  .vs-card h3 { font-size: 22px; }
+  .vs-card-orb { width: 48px; height: 48px; font-size: 19px; }
+}
+@media (max-width: 600px) {
+  .vs-stage { height: 440px; }
+  .vs-card { width: 160px; padding: 22px 14px 14px; }
+  .vs-card h3 { font-size: 20px; }
+  .vs-card-orb { width: 42px; height: 42px; font-size: 17px; }
+  .vs-card p { font-size: 9px; }
+}
 
 
-/* Three-up voice reveal: one bundled signal becomes a readable lineup. */
-.voice-story-card { display: block; width: min(350px, calc(100% - 60px)); min-height: 400px; padding: 50px 24px 22px; }.voice-card-top { top: 20px; }.voice-card-avatar { width: 82px; height: 82px; margin: 0 0 22px; font-size: 32px; }.voice-card-copy h3 { font-size: 43px; }.voice-card-copy strong { font-size: 19px; }.voice-card-copy p { min-height: 40px; margin: 14px 0 16px; }.voice-card-signal { margin-top: 22px; padding: 17px 0 0; border-top: 1px solid rgba(255,255,255,.12); border-left: 0; }.voice-card-wave { height: 70px; }.voice-story-stage { min-height: 640px; }
-@media (max-width: 900px) and (min-width: 681px) { .voice-story-card { width: min(300px, calc(100% - 40px)); min-height: 370px; }.voice-card-copy h3 { font-size: 36px; } }
