@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties, type PointerEvent } from "react";
 import {
   ArrowRight, ArrowUpRight, CalendarDays, Check, ChevronDown, Clock3, Globe2,
   Headphones, Menu, MessageCircle, Mic2, Play, ShieldCheck, Sparkles,
@@ -56,10 +56,14 @@ function LogoMark() {
   return <span className="logo-mark" aria-hidden="true"><span /><span /><span /></span>;
 }
 
-function Waveform({ small = false }: { small?: boolean }) {
+function Waveform({ small = false, reactive = false, energy = 0 }: { small?: boolean; reactive?: boolean; energy?: number }) {
   const bars = [9, 18, 12, 27, 16, 36, 22, 43, 25, 34, 17, 29, 11, 21, 8];
-  return <span className={small ? "waveform waveform-small" : "waveform"} aria-hidden="true">
-    {bars.map((height, index) => <i key={index} style={{ height: `${small ? height * .56 : height}px`, animationDelay: `${index * 70}ms` }} />)}
+  return <span className={small ? "waveform waveform-small" : reactive ? "waveform waveform-reactive" : "waveform"} aria-hidden="true">
+    {bars.map((height, index) => {
+      const pulse = reactive ? 1 + energy * (.24 + (index % 4) * .07) : 1;
+      const barHeight = small ? height * .56 : height * pulse;
+      return <i key={index} style={{ height: `${barHeight}px`, animationDelay: `${index * 70}ms` }} />;
+    })}
   </span>;
 }
 
@@ -73,6 +77,7 @@ export default function Home() {
   const [selectedDay, setSelectedDay] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState("10:00 AM");
   const [demoRequested, setDemoRequested] = useState(false);
+  const [heroPointer, setHeroPointer] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -132,6 +137,20 @@ export default function Home() {
     setDemoOpen(true);
     setMenuOpen(false);
   };
+  const handleHeroPointerMove = (event: PointerEvent<HTMLElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    setHeroPointer({
+      x: ((event.clientX - bounds.left) / bounds.width - .5) * 2,
+      y: ((event.clientY - bounds.top) / bounds.height - .5) * 2,
+    });
+  };
+  const heroStyle = {
+    "--mouse-shift-x": `${heroPointer.x * 18}px`,
+    "--mouse-shift-y": `${heroPointer.y * 12}px`,
+    "--mouse-glow-x": `${heroPointer.x * 125}px`,
+    "--mouse-glow-y": `${heroPointer.y * 82}px`,
+  } as CSSProperties;
+  const heroEnergy = Math.min(1, Math.sqrt(heroPointer.x ** 2 + heroPointer.y ** 2) / 1.15);
   const demoDays = [
     { weekday: "Tue", date: "22 Sep" },
     { weekday: "Wed", date: "23 Sep" },
@@ -161,8 +180,8 @@ export default function Home() {
     </header>
 
     <main id="top">
-      <section className="hero-section">
-        <div className="hero-orbit orbit-one" data-parallax="0.035" /><div className="hero-orbit orbit-two" data-parallax="0.06" />
+      <section className="hero-section" style={heroStyle} onPointerMove={handleHeroPointerMove} onPointerLeave={() => setHeroPointer({ x: 0, y: 0 })}>
+        <div className="hero-mouse-glow" aria-hidden="true" /><div className="hero-particle-field" aria-hidden="true"><i /><i /><i /><i /><i /></div><div className="hero-orbit orbit-one" data-parallax="0.035" /><div className="hero-orbit orbit-two" data-parallax="0.06" />
         <div className="hero-inner section-container">
           <div className="hero-copy reveal-up">
             <div className="eyebrow"><span className="eyebrow-dot" /> THE VOICE LAYER FOR MODERN TEAMS</div>
@@ -173,7 +192,7 @@ export default function Home() {
           </div>
           <div className="hero-visual reveal-up reveal-delay-2">
             <div className="visual-label label-top"><span className="live-dot" /> LIVE VOICE AGENT</div>
-            <div className="voice-orb-wrap" data-parallax="0.08"><div className="voice-orb-glow" /><div className="voice-orb"><div className="orb-core"><Waveform /></div><span className="orb-ring ring-a" /><span className="orb-ring ring-b" /><span className="orb-spark spark-a" /><span className="orb-spark spark-b" /></div></div>
+            <div className="voice-orb-wrap" data-parallax="0.08"><div className="voice-orb-glow" /><div className="voice-orb"><div className="orb-core"><Waveform reactive energy={heroEnergy} /></div><span className="orb-ring ring-a" /><span className="orb-ring ring-b" /><span className="orb-spark spark-a" /><span className="orb-spark spark-b" /></div></div>
             <div className="voice-card"><div className="voice-card-head"><div><span className="card-overline">VYCE / DEMO CALL</span><strong>Onboarding assistant</strong></div><span className="call-time"><Clock3 size={13} /> 00:42</span></div><div className="voice-card-message"><span className="avatar avatar-vyce">V</span><div><span className="message-label">Vyce</span><p>“I’ve got you. Let’s get the next step sorted.”</p></div></div><div className="voice-card-foot"><Waveform small /><span>Listening for intent</span><span className="signal-bars"><i /><i /><i /></span></div></div>
             <div className="floating-chip chip-left"><span className="chip-icon"><Zap size={14} fill="currentColor" /></span><span><b>2.4 sec</b><small>response time</small></span></div><div className="floating-chip chip-right"><span className="chip-icon chip-coral"><Globe2 size={14} /></span><span><b>24 / 7</b><small>always on</small></span></div>
           </div>
@@ -208,12 +227,22 @@ export default function Home() {
         <div className="demo-modal-kicker"><CalendarDays size={15} /> VYCE / BOOK A DEMO</div>
         <h2 id="demo-modal-title">Find a time<br /><em>that works.</em></h2>
         <p className="demo-modal-copy">Choose an available slot for a quick walkthrough with the Vyce team.</p>
-        <div className="demo-calendar-label">SEPTEMBER 2026</div>
-        <div className="demo-days">{demoDays.map((day, index) => <button key={day.date} className={selectedDay === index ? "demo-day active" : "demo-day"} onClick={() => { setSelectedDay(index); setDemoRequested(false); }}><span>{day.weekday}</span><strong>{day.date.split(" ")[0]}</strong></button>)}</div>
-        <div className="demo-calendar-label">AVAILABLE TIMES <span>IST · 30 MIN</span></div>
-        <div className="demo-slots">{demoSlots.map((slot) => <button key={slot} className={selectedSlot === slot ? "demo-slot active" : "demo-slot"} onClick={() => { setSelectedSlot(slot); setDemoRequested(false); }}>{slot}</button>)}</div>
-        <button className="demo-confirm" onClick={() => setDemoRequested(true)}>{demoRequested ? "Request ready — we’ll be in touch" : `Request ${demoDays[selectedDay].weekday}, ${demoDays[selectedDay].date} at ${selectedSlot}`} <ArrowUpRight size={16} /></button>
-        <span className="demo-modal-note"><ShieldCheck size={14} /> No commitment · We’ll confirm by email</span>
+        {demoRequested ? <div className="demo-success" aria-live="polite">
+          <div className="success-icon"><span className="success-ripple" /><Check size={28} strokeWidth={2.5} /></div>
+          <span className="demo-success-kicker">REQUEST RECEIVED</span>
+          <h3>You’re on the<br /><em>calendar.</em></h3>
+          <p>Thanks — your demo request is in. We’ll send a confirmation with the details shortly.</p>
+          <div className="demo-confirmation-summary"><div><span>DATE</span><strong>{demoDays[selectedDay].weekday}, {demoDays[selectedDay].date}</strong></div><div><span>TIME</span><strong>{selectedSlot} <small>IST</small></strong></div></div>
+          <button className="success-change" onClick={() => setDemoRequested(false)}>Choose another time <ArrowRight size={15} /></button>
+          <span className="demo-modal-note"><ShieldCheck size={14} /> No commitment · We’ll confirm by email</span>
+        </div> : <>
+          <div className="demo-calendar-label">SEPTEMBER 2026</div>
+          <div className="demo-days">{demoDays.map((day, index) => <button key={day.date} className={selectedDay === index ? "demo-day active" : "demo-day"} onClick={() => { setSelectedDay(index); setDemoRequested(false); }}><span>{day.weekday}</span><strong>{day.date.split(" ")[0]}</strong></button>)}</div>
+          <div className="demo-calendar-label">AVAILABLE TIMES <span>IST · 30 MIN</span></div>
+          <div className="demo-slots">{demoSlots.map((slot) => <button key={slot} className={selectedSlot === slot ? "demo-slot active" : "demo-slot"} onClick={() => { setSelectedSlot(slot); setDemoRequested(false); }}>{slot}</button>)}</div>
+          <button className="demo-confirm" onClick={() => setDemoRequested(true)}>Confirm this time <ArrowUpRight size={16} /></button>
+          <span className="demo-modal-note"><ShieldCheck size={14} /> No commitment · We’ll confirm by email</span>
+        </>}
       </div>
     </div>}
     <button className="floating-demo-cta" onClick={openDemo}><span className="floating-demo-icon"><CalendarDays size={15} /></span><span>Book a demo</span><ArrowUpRight size={15} /></button>
