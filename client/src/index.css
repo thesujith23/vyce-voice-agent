@@ -314,3 +314,30 @@ html { scroll-behavior: smooth; }
 @media (max-width: 980px) { .platform-feature-grid { grid-template-columns: repeat(6, 1fr); }.platform-feature-grid .platform-feature, .platform-feature-grid .platform-feature:nth-child(1), .platform-feature-grid .platform-feature:nth-child(7), .platform-feature-grid .platform-feature:nth-child(8) { grid-column: span 3; } }
 @media (max-width: 600px) { .platform-feature-grid { grid-template-columns: 1fr; gap: 13px; margin-top: 40px; }.platform-feature-grid .platform-feature, .platform-feature-grid .platform-feature:nth-child(1), .platform-feature-grid .platform-feature:nth-child(7), .platform-feature-grid .platform-feature:nth-child(8) { grid-column: span 1; min-height: 330px; padding: 22px; border-radius: 15px; }.feature-learn-more { right: 22px; bottom: 22px; opacity: 1; transform: none; }.platform-feature-grid .platform-feature > svg:last-child { display: none; } }
 @media (prefers-reduced-motion: reduce) { .platform-feature-grid .platform-feature, .platform-feature-grid .feature-visual, .feature-learn-more { transition: none; } }
+
+
+/* Lightweight motion language for capability cards */
+@keyframes featureWave { 0%,100% { transform: scaleY(.72); opacity: .6; } 50% { transform: scaleY(1.08); opacity: 1; } }
+@keyframes featurePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(183,241,141,.18); } 50% { box-shadow: 0 0 0 8px rgba(183,241,141,0); } }
+@keyframes featureFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes featureScan { 0% { transform: translateX(-115%); } 100% { transform: translateX(250%); } }
+@keyframes featureType { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
+.platform-feature-grid .feature-card-head svg { animation: featureFloat 3.4s ease-in-out infinite; }
+.platform-feature-grid .feature-card-head .feature-number { position: relative; }
+.platform-feature-grid .feature-card-head .feature-number::after { display: inline-block; width: 4px; height: 4px; margin-left: 8px; content: ""; vertical-align: middle; border-radius: 50%; background: currentColor; opacity: .6; animation: featurePulse 2.2s ease-in-out infinite; }
+.platform-feature-grid .feature-visual.listening .new-wave rect, .platform-feature-grid .feature-visual.listening .new-wave path { transform-box: fill-box; transform-origin: center; animation: featureWave 1.15s ease-in-out infinite; }
+.platform-feature-grid .feature-visual.listening .new-wave rect:nth-child(2), .platform-feature-grid .feature-visual.listening .new-wave path:nth-child(2) { animation-delay: .12s; }
+.platform-feature-grid .feature-visual.listening .new-wave rect:nth-child(3), .platform-feature-grid .feature-visual.listening .new-wave path:nth-child(3) { animation-delay: .24s; }
+.platform-feature-grid .feature-visual.listening .new-wave rect:nth-child(4), .platform-feature-grid .feature-visual.listening .new-wave path:nth-child(4) { animation-delay: .36s; }
+.platform-feature-grid .call-dot, .platform-feature-grid .live-dot { animation: featurePulse 1.8s ease-in-out infinite; }
+.platform-feature-grid .outbound-visual::after, .platform-feature-grid .transcript-visual::after, .platform-feature-grid .logs-visual::after { position: absolute; top: 0; bottom: 0; left: 0; width: 34%; content: ""; background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent); animation: featureScan 3.5s ease-in-out infinite; pointer-events: none; }
+.platform-feature-grid .outbound-visual, .platform-feature-grid .transcript-visual, .platform-feature-grid .logs-visual { position: relative; overflow: hidden; }
+.platform-feature-grid .outbound-visual b, .platform-feature-grid .logs-visual b { animation: featureFloat 2.8s ease-in-out infinite; }
+.platform-feature-grid .transcript-visual b { animation: featureType 2.2s ease-in-out infinite; }
+.platform-feature-grid .builder-visual b { transition: transform .24s var(--ease-out), color .24s ease; }
+.platform-feature-grid .builder-visual b:nth-child(2) { animation: featureFloat 3s ease-in-out infinite; animation-delay: .1s; }
+.platform-feature-grid .builder-visual b:nth-child(3) { animation: featureFloat 3s ease-in-out infinite; animation-delay: .25s; }
+.platform-feature-grid .builder-visual b:nth-child(4) { animation: featureFloat 3s ease-in-out infinite; animation-delay: .4s; }
+.platform-feature-grid .voices-visual span { animation: featureFloat 3s ease-in-out infinite; }
+.platform-feature-grid .voices-visual span:nth-child(2) { animation-delay: .12s; }.platform-feature-grid .voices-visual span:nth-child(3) { animation-delay: .24s; }.platform-feature-grid .voices-visual span:nth-child(4) { animation-delay: .36s; }.platform-feature-grid .voices-visual span:nth-child(5) { animation-delay: .48s; }
+@media (prefers-reduced-motion: reduce) { .platform-feature-grid .feature-card-head svg, .platform-feature-grid .feature-card-head .feature-number::after, .platform-feature-grid .feature-visual *, .platform-feature-grid .feature-visual::after { animation: none !important; } }
